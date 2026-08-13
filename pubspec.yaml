@@ -1,0 +1,20 @@
+name: premium_music_player
+description: "A premium iOS-style glassmorphism music player."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.6 # iOS Premium Icons
+  just_audio: ^0.9.36 # Best Audio Player
+  just_audio_background: ^0.0.1-beta.12 # For Notification Controls
+  on_audio_query: ^2.9.0 # To scan local storage
+  permission_handler: ^11.3.0 # To ask for storage permissions
+  audio_video_progress_bar: ^2.0.3 # Premium Seekbar
+
+flutter:
+  uses-material-design: true
