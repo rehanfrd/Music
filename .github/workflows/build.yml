@@ -2,7 +2,7 @@ name: Build Music Player
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
@@ -17,15 +17,26 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-      - run: |
+          
+      - name: Fresh Android Setup & Build
+        run: |
+          # 1. Purana incomplete android setup delete karein
+          rm -rf android
+          
+          # 2. Naya, ekdam fresh aur latest v2 Android folder banayein
+          flutter create --platforms android .
+          
+          # 3. Gaane padhne ki Permissions automatically Manifest mein daalein
+          sed -i '/<application/i \    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>\n    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/>' android/app/src/main/AndroidManifest.xml
+          
+          # 4. Audio packages ke liye MinSDK 21 set karein
+          echo "flutter.minSdkVersion=21" > android/local.properties
+          
+          # 5. Build start karein
           flutter config --no-analytics
           flutter pub get
-          # Android folder create hone ka wait karein
-          mkdir -p android
-          # local.properties file banayein aur fir usme likhein
-          touch android/local.properties
-          echo "flutter.minSdkVersion=21" > android/local.properties
           flutter build apk --release
+          
       - uses: actions/upload-artifact@v4
         with:
           name: MusicPlayer-APK
