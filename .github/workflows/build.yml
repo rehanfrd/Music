@@ -13,7 +13,7 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Set up Java (Fixed Warning)
+    - name: Set up Java
       uses: actions/setup-java@v5
       with:
         distribution: 'temurin'
@@ -29,7 +29,7 @@ jobs:
         rm -rf android
         flutter create --platforms android .
 
-    - name: Fix Android Min SDK Version (Kotlin & Groovy Support)
+    - name: Fix Android Min SDK Version
       run: |
         sed -i 's/minSdkVersion flutter.minSdkVersion/minSdkVersion 21/g' android/app/build.gradle || true
         sed -i 's/minSdk = flutter.minSdkVersion/minSdk = 21/g' android/app/build.gradle.kts || true
@@ -37,9 +37,12 @@ jobs:
     - name: Install Dependencies
       run: flutter pub get
 
-    - name: Build APK (With Retry Logic)
+    - name: Fix on_audio_query Namespace Issue
       run: |
-        flutter build apk --release || flutter build apk --release
+        sed -i '/android {/a \    namespace "com.lucasjosino.on_audio_query"' /home/runner/.pub-cache/hosted/pub.dev/on_audio_query_android-*/android/build.gradle
+
+    - name: Build APK
+      run: flutter build apk --release
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
